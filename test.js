@@ -18,7 +18,6 @@ function mkReq (url, method) {
   req.headers = {
       'x-gitlab-token'   : 'bogus'
     , 'x-gitlab-event'    : 'bogus'
-    , 'x-github-delivery' : 'bogus'
   }
   return req
 }

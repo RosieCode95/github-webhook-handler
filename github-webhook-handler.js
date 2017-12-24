@@ -56,16 +56,12 @@ function create (options) {
 
     var sig   = req.headers['x-gitlab-token']
       , event = req.headers['x-gitlab-event']
-      , id    = req.headers['x-github-delivery']
 
     if (!sig)
       return hasError('No x-gitlab-token found on request')
 
     if (!event)
       return hasError('No x-gitlab-event found on request')
-
-    if (!id)
-      return hasError('No X-Github-Delivery found on request')
 
     if (events && events.indexOf(event) == -1)
       return hasError('x-gitlab-event is not acceptable')
