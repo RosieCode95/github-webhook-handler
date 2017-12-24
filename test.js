@@ -16,8 +16,8 @@ function mkReq (url, method) {
   req.method = method || 'POST'
   req.url = url
   req.headers = {
-      'x-hub-signature'   : 'bogus'
-    , 'x-github-event'    : 'bogus'
+      'x-gitlab-token'   : 'bogus'
+    , 'x-gitlab-event'    : 'bogus'
     , 'x-github-delivery' : 'bogus'
   }
   return req
@@ -202,8 +202,8 @@ test('handler accepts a signed blob', function (t) {
     , req  = mkReq('/')
     , res  = mkRes()
 
-  req.headers['x-hub-signature'] = signBlob('bogus', json)
-  req.headers['x-github-event']  = 'push'
+  req.headers['x-gitlab-token'] = signBlob('bogus', json)
+  req.headers['x-gitlab-event']  = 'push'
 
   h.on('push', function (event) {
     t.deepEqual(event, { event: 'push', id: 'bogus', payload: obj, url: '/', host: undefined, protocol: undefined })
@@ -232,8 +232,8 @@ test('handler accepts a signed blob with alt event', function (t) {
     , req  = mkReq('/')
     , res  = mkRes()
 
-  req.headers['x-hub-signature'] = signBlob('bogus', json)
-  req.headers['x-github-event']  = 'issue'
+  req.headers['x-gitlab-token'] = signBlob('bogus', json)
+  req.headers['x-gitlab-event']  = 'issue'
 
   h.on('push', function (event) {
     t.fail(true, 'should not get here!')
@@ -266,16 +266,16 @@ test('handler rejects a badly signed blob', function (t) {
     , req  = mkReq('/')
     , res  = mkRes()
 
-  req.headers['x-hub-signature'] = signBlob('bogus', json)
+  req.headers['x-gitlab-token'] = signBlob('bogus', json)
   // break signage by a tiny bit
-  req.headers['x-hub-signature'] = '0' + req.headers['x-hub-signature'].substring(1)
+  req.headers['x-gitlab-token'] = '0' + req.headers['x-gitlab-token'].substring(1)
 
   h.on('error', function (err, _req) {
     t.ok(err, 'got an error')
     t.strictEqual(_req, req, 'was given original request object')
     t.equal(res.$statusCode, 400, 'correct status code')
     t.deepEqual(res.$headers, { 'content-type': 'application/json' })
-    t.equal(res.$end, '{"error":"X-Hub-Signature does not match blob signature"}', 'got correct content')
+    t.equal(res.$end, '{"error":"x-gitlab-token does not match blob signature"}', 'got correct content')
   })
 
   h.on('push', function (event) {
@@ -300,8 +300,8 @@ test('handler responds on a bl error', function (t) {
     , req  = mkReq('/')
     , res  = mkRes()
 
-  req.headers['x-hub-signature'] = signBlob('bogus', json)
-  req.headers['x-github-event']  = 'issue'
+  req.headers['x-gitlab-token'] = signBlob('bogus', json)
+  req.headers['x-gitlab-event']  = 'issue'
 
   h.on('push', function (event) {
     t.fail(true, 'should not get here!')

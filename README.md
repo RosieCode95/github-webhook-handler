@@ -53,8 +53,8 @@ for multiple handlers, please see [multiple-handlers-issue](https://github.com/r
 github-webhook-handler exports a single function, use this function to *create* a webhook handler by passing in an *options* object. Your options object should contain:
 
  * `"path"`: the complete case sensitive path/route to match when looking at `req.url` for incoming requests. Any request not matching this path will cause the callback function to the handler to be called (sometimes called the `next` handler).
- * `"secret"`: this is a hash key used for creating the SHA-1 HMAC signature of the JSON blob sent by GitHub. You should register the same secret key with GitHub. Any request not delivering a `X-Hub-Signature` that matches the signature generated using this key against the blob will be rejected and cause an `'error'` event (also the callback will be called with an `Error` object).
- * `"events"`: an optional array of whitelisted event types (see: *events.json*). If defined, any incoming request whose `X-Github-Event` can't be found in the whitelist will be rejected. If only a single event type is acceptable, this option can also be a string.
+ * `"secret"`: this is a hash key used for creating the SHA-1 HMAC signature of the JSON blob sent by GitHub. You should register the same secret key with GitHub. Any request not delivering a `x-gitlab-token` that matches the signature generated using this key against the blob will be rejected and cause an `'error'` event (also the callback will be called with an `Error` object).
+ * `"events"`: an optional array of whitelisted event types (see: *events.json*). If defined, any incoming request whose `x-gitlab-event` can't be found in the whitelist will be rejected. If only a single event type is acceptable, this option can also be a string.
 
 The resulting **handler** function acts like a common "middleware" handler that you can insert into a processing chain. It takes `request`, `response`, and `callback` arguments. The `callback` is not called if the request is successfully handled, otherwise it is called either with an `Error` or no arguments.
 

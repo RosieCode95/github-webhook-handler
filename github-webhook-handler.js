@@ -54,21 +54,21 @@ function create (options) {
       callback(err)
     }
 
-    var sig   = req.headers['x-hub-signature']
-      , event = req.headers['x-github-event']
+    var sig   = req.headers['x-gitlab-token']
+      , event = req.headers['x-gitlab-event']
       , id    = req.headers['x-github-delivery']
 
     if (!sig)
-      return hasError('No X-Hub-Signature found on request')
+      return hasError('No x-gitlab-token found on request')
 
     if (!event)
-      return hasError('No X-Github-Event found on request')
+      return hasError('No x-gitlab-event found on request')
 
     if (!id)
       return hasError('No X-Github-Delivery found on request')
 
     if (events && events.indexOf(event) == -1)
-      return hasError('X-Github-Event is not acceptable')
+      return hasError('x-gitlab-event is not acceptable')
 
     req.pipe(bl(function (err, data) {
       if (err) {
@@ -78,7 +78,7 @@ function create (options) {
       var obj
 
       if (!verify(sig, data))
-        return hasError('X-Hub-Signature does not match blob signature')
+        return hasError('x-gitlab-token does not match blob signature')
 
       try {
         obj = JSON.parse(data.toString())
